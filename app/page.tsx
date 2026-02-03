@@ -1,747 +1,281 @@
-'use client'
-
-import { useState, useEffect, useRef } from 'react'
-import { 
-  Instagram, ArrowRight, Mail, Zap, Calendar, Clock, Gift, 
-  Users, Trophy, Share2, Copy, Check, ChevronDown, ChevronUp,
-  Sparkles, Target, Rocket, Crown, Star, ExternalLink
-} from 'lucide-react'
-
-// Challenge data
-const challenges = [
-  {
-    day: 'Monday',
-    date: 'Feb 3',
-    name: 'Money Monday',
-    tool: 'AI Revenue Leak Detector',
-    audience: 'Entrepreneurs & Business Owners',
-    emoji: '💰',
-    color: 'from-green-500 to-emerald-600',
-    bgColor: 'bg-green-500/10',
-    borderColor: 'border-green-500/30',
-    description: 'Discover where your business is bleeding money. This AI analyzes your operations and finds the revenue leaks you didn\'t know existed.',
-    features: ['Identifies hidden costs', 'Spots pricing inefficiencies', 'Finds automation opportunities', 'Generates action plan'],
-    value: '$2,000+',
-  },
-  {
-    day: 'Tuesday',
-    date: 'Feb 4',
-    name: 'Tool Tuesday',
-    tool: 'AI Content Calendar Generator',
-    audience: 'Creators & Side Hustlers',
-    emoji: '🛠️',
-    color: 'from-blue-500 to-cyan-600',
-    bgColor: 'bg-blue-500/10',
-    borderColor: 'border-blue-500/30',
-    description: '30 days of content planned in 30 seconds. Never stare at a blank screen again.',
-    features: ['30 days of posts', 'Platform-specific formats', 'Hashtag recommendations', 'Best posting times'],
-    value: '$500+',
-  },
-  {
-    day: 'Wednesday',
-    date: 'Feb 5',
-    name: 'Wellness Wednesday',
-    tool: 'AI Self-Care Concierge',
-    audience: 'Queens Who Prioritize Themselves',
-    emoji: '💅',
-    color: 'from-pink-500 to-rose-600',
-    bgColor: 'bg-pink-500/10',
-    borderColor: 'border-pink-500/30',
-    description: 'Your personal AI wellness advisor. Get customized self-care routines, product recommendations, and daily rituals.',
-    features: ['Personalized routines', 'Product recommendations', 'Daily affirmations', 'Wellness tracking'],
-    value: '$300+',
-  },
-  {
-    day: 'Thursday',
-    date: 'Feb 6',
-    name: 'Thirsty Thursday',
-    tool: 'AI Party & Vibe Planner',
-    audience: 'Social Butterflies & Event Planners',
-    emoji: '🔥',
-    color: 'from-purple-500 to-violet-600',
-    bgColor: 'bg-purple-500/10',
-    borderColor: 'border-purple-500/30',
-    description: 'Plan the perfect event in minutes. From intimate dinners to massive parties.',
-    features: ['Venue suggestions', 'Theme ideas', 'Playlist curation', 'Budget planning'],
-    value: '$400+',
-  },
-  {
-    day: 'Friday',
-    date: 'Feb 7',
-    name: 'Flex Friday',
-    tool: 'AI Luxury Concierge',
-    audience: 'High Earners & Luxury Lovers',
-    emoji: '💎',
-    color: 'from-amber-500 to-yellow-600',
-    bgColor: 'bg-amber-500/10',
-    borderColor: 'border-amber-500/30',
-    description: 'Experience luxury without the premium price research. AI-powered recommendations for the finer things.',
-    features: ['Restaurant picks', 'Travel recommendations', 'Experience curation', 'VIP access tips'],
-    value: '$1,000+',
-  },
-  {
-    day: 'Saturday',
-    date: 'Feb 8',
-    name: 'Side Hustle Saturday',
-    tool: 'AI Business Idea Validator',
-    audience: 'Future Entrepreneurs',
-    emoji: '🎯',
-    color: 'from-red-500 to-orange-600',
-    bgColor: 'bg-red-500/10',
-    borderColor: 'border-red-500/30',
-    description: 'Is your business idea actually good? Get honest AI analysis before you invest time and money.',
-    features: ['Market analysis', 'Competition check', 'Revenue potential', 'Launch roadmap'],
-    value: '$800+',
-  },
-  {
-    day: 'Sunday',
-    date: 'Feb 9',
-    name: 'Main Character Sunday',
-    tool: 'AI Personal Brand Builder',
-    audience: 'EVERYONE',
-    emoji: '👑',
-    color: 'from-yellow-400 to-amber-500',
-    bgColor: 'bg-yellow-500/10',
-    borderColor: 'border-yellow-500/30',
-    description: 'Become the main character of your industry. Complete brand strategy in minutes.',
-    features: ['Brand voice guide', 'Bio generator', 'Content pillars', 'Visual direction'],
-    value: '$1,500+',
-  },
-]
-
-// Countdown component
-function Countdown({ targetDate }: { targetDate: Date }) {
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-  
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const now = new Date().getTime()
-      const distance = targetDate.getTime() - now
-      
-      if (distance < 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-        return
-      }
-      
-      setTimeLeft({
-        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((distance % (1000 * 60)) / 1000)
-      })
-    }, 1000)
-    
-    return () => clearInterval(timer)
-  }, [targetDate])
-  
-  return (
-    <div className="flex gap-2 text-sm">
-      <div className="countdown-box px-2 py-1 rounded">
-        <span className="font-bold">{timeLeft.days}</span>
-        <span className="text-white/50 ml-1">d</span>
-      </div>
-      <div className="countdown-box px-2 py-1 rounded">
-        <span className="font-bold">{timeLeft.hours}</span>
-        <span className="text-white/50 ml-1">h</span>
-      </div>
-      <div className="countdown-box px-2 py-1 rounded">
-        <span className="font-bold">{timeLeft.minutes}</span>
-        <span className="text-white/50 ml-1">m</span>
-      </div>
-      <div className="countdown-box px-2 py-1 rounded">
-        <span className="font-bold">{timeLeft.seconds}</span>
-        <span className="text-white/50 ml-1">s</span>
-      </div>
-    </div>
-  )
-}
-
-// Animated counter
-function AnimatedCounter({ target, duration = 2000 }: { target: number; duration?: number }) {
-  const [count, setCount] = useState(0)
-  const countRef = useRef(0)
-  
-  useEffect(() => {
-    const startTime = Date.now()
-    const startValue = countRef.current
-    
-    const animate = () => {
-      const elapsed = Date.now() - startTime
-      const progress = Math.min(elapsed / duration, 1)
-      const easeOut = 1 - Math.pow(1 - progress, 3)
-      const current = Math.floor(startValue + (target - startValue) * easeOut)
-      
-      setCount(current)
-      countRef.current = current
-      
-      if (progress < 1) {
-        requestAnimationFrame(animate)
-      }
-    }
-    
-    requestAnimationFrame(animate)
-  }, [target, duration])
-  
-  return <span className="counter-value">{count.toLocaleString()}</span>
-}
+import Link from 'next/link'
+import { properties } from '@/lib/data/properties'
+import { formatCOP } from '@/lib/utils/pricing'
 
 export default function Home() {
-  const [email, setEmail] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [error, setError] = useState('')
-  const [subscriberCount, setSubscriberCount] = useState(523) // Starting number for social proof
-  const [expandedDay, setExpandedDay] = useState<number | null>(null)
-  const [copied, setCopied] = useState(false)
-  const [showPitchForm, setShowPitchForm] = useState(false)
-  const [referralCode, setReferralCode] = useState('')
+  const featured = properties.slice(0, 3)
   
-  const scheduleRef = useRef<HTMLDivElement>(null)
-  const notifyRef = useRef<HTMLDivElement>(null)
-  const pitchRef = useRef<HTMLDivElement>(null)
-
-  // Challenge start date (Feb 3, 2026)
-  const challengeStart = new Date('2026-02-03T00:00:00')
-  
-  // Check for referral code in URL
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const ref = params.get('ref')
-    if (ref) {
-      localStorage.setItem('referredBy', ref)
-    }
-  }, [])
-  
-  // Fetch real subscriber count
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await fetch('/api/stats')
-        const data = await res.json()
-        if (data.count) {
-          setSubscriberCount(data.count)
-        }
-      } catch (err) {
-        console.error('Failed to fetch stats')
-      }
-    }
-    fetchStats()
-    
-    // Refresh every 30 seconds
-    const interval = setInterval(fetchStats, 30000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setIsSubmitting(true)
-    
-    if (!email || !email.includes('@')) {
-      setError('Please enter a valid email')
-      setIsSubmitting(false)
-      return
-    }
-    
-    try {
-      // Get referral code from localStorage if exists
-      const referredBy = typeof window !== 'undefined' ? localStorage.getItem('referredBy') : null
-      
-      // Save to Supabase
-      const response = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          email, 
-          referredBy,
-          source: 'landing_page'
-        })
-      })
-      
-      const data = await response.json()
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to subscribe')
-      }
-      
-      setReferralCode(data.referralCode || '')
-      setIsSubmitted(true)
-      setSubscriberCount(prev => prev + 1)
-    } catch (err: any) {
-      if (err.message?.includes('duplicate') || err.message?.includes('already')) {
-        setError('You\'re already signed up! Check your email.')
-      } else {
-        setError('Something went wrong. Please try again.')
-      }
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
-    ref.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  const shareUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}${referralCode ? `?ref=${referralCode}` : ''}`
-    : ''
-
-  const shareText = "🚀 7 Days. 7 Free AI Tools. Every tool is worth $500-2000. I just signed up - find your day:"
-
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-[#0a0a0a] text-white overflow-hidden">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/80 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center">
+              <span className="text-black font-bold text-lg">R</span>
+            </div>
+            <span className="text-xl font-semibold tracking-tight">RentaDiario</span>
+          </Link>
+          
+          <div className="hidden md:flex items-center gap-8">
+            <Link href="/buscar" className="text-white/70 hover:text-white transition">Explorar</Link>
+            <Link href="#" className="text-white/70 hover:text-white transition">Sé Anfitrión</Link>
+            <Link href="/auth/login" className="bg-white text-black px-5 py-2.5 rounded-full font-medium hover:bg-white/90 transition">
+              Iniciar Sesión
+            </Link>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-4 py-20">
-        {/* Floating elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-brand-pink/20 rounded-full blur-[100px] animate-float" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-brand-purple/20 rounded-full blur-[120px] animate-float" style={{ animationDelay: '-3s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-orange/10 rounded-full blur-[150px]" />
+      <section className="relative min-h-screen flex items-center justify-center pt-20">
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-amber-500/20 rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-amber-600/10 rounded-full blur-[100px] animate-pulse" />
         </div>
         
-        <div className="relative z-10 max-w-5xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-8 animate-fade-in">
-            <Gift className="w-4 h-4 text-brand-pink" />
-            <span className="text-sm text-white/80">100% Free • No Catch • Real Value</span>
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+        
+        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-2 mb-8">
+            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            <span className="text-sm text-white/70">+2,500 propiedades verificadas en Colombia</span>
           </div>
           
-          {/* Main headline */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight animate-slide-up">
-            <span className="text-white">7 DAYS.</span>
-            <br />
-            <span className="gradient-text">7 FREE AI TOOLS.</span>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6">
+            <span className="block">Vive Colombia</span>
+            <span className="block bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-transparent">
+              Como Nunca Antes
+            </span>
           </h1>
           
-          {/* Subheadline */}
-          <p className="text-xl md:text-2xl text-white/70 mb-4 max-w-2xl mx-auto animate-slide-up stagger-1">
-            Every day this week, I'm building something <strong className="text-white">completely free</strong> for a different audience.
-          </p>
-          <p className="text-lg md:text-xl text-brand-pink mb-8 animate-slide-up stagger-2">
-            Find your day. Get your tool.
+          <p className="text-xl md:text-2xl text-white/50 max-w-2xl mx-auto mb-12">
+            Alojamientos únicos seleccionados para viajeros que buscan experiencias extraordinarias
           </p>
           
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-slide-up stagger-3">
-            <button 
-              onClick={() => scrollToSection(scheduleRef)}
-              className="btn-primary px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2"
-            >
-              See The Schedule <ArrowRight className="w-5 h-5" />
-            </button>
-            <button 
-              onClick={() => scrollToSection(notifyRef)}
-              className="px-8 py-4 rounded-xl font-semibold text-lg glass-card glass-card-hover flex items-center justify-center gap-2"
-            >
-              <Mail className="w-5 h-5" /> Get Notified
-            </button>
+          {/* Search Card */}
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-3 max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row gap-3">
+              <div className="flex-1 bg-white/5 rounded-2xl px-6 py-4 text-left hover:bg-white/10 transition cursor-pointer">
+                <label className="text-xs text-white/40 uppercase tracking-wider">Destino</label>
+                <div className="text-white font-medium">¿A dónde vamos?</div>
+              </div>
+              <div className="flex-1 bg-white/5 rounded-2xl px-6 py-4 text-left hover:bg-white/10 transition cursor-pointer">
+                <label className="text-xs text-white/40 uppercase tracking-wider">Llegada</label>
+                <div className="text-white font-medium">Agregar fecha</div>
+              </div>
+              <div className="flex-1 bg-white/5 rounded-2xl px-6 py-4 text-left hover:bg-white/10 transition cursor-pointer">
+                <label className="text-xs text-white/40 uppercase tracking-wider">Salida</label>
+                <div className="text-white font-medium">Agregar fecha</div>
+              </div>
+              <Link href="/buscar" className="bg-gradient-to-r from-amber-400 to-amber-600 text-black font-semibold px-8 py-4 rounded-2xl hover:shadow-lg hover:shadow-amber-500/25 transition-all flex items-center justify-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <span>Buscar</span>
+              </Link>
+            </div>
           </div>
           
-          {/* Stats */}
-          <div className="flex flex-wrap justify-center gap-8 md:gap-16 animate-slide-up stagger-4">
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-black text-white">7</div>
-              <div className="text-white/50 text-sm">Free Tools</div>
+          <div className="flex flex-wrap justify-center gap-8 mt-12 text-white/40">
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm">Pago seguro</span>
             </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-black text-white">$0</div>
-              <div className="text-white/50 text-sm">Cost to You</div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm">Anfitriones verificados</span>
             </div>
-            <div className="text-center">
-              <div className="text-4xl md:text-5xl font-black gradient-text">$6K+</div>
-              <div className="text-white/50 text-sm">Total Value</div>
+            <div className="flex items-center gap-2">
+              <svg className="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm">Soporte 24/7</span>
             </div>
           </div>
-        </div>
-        
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-8 h-8 text-white/30" />
         </div>
       </section>
 
-      {/* Live Counter Bar */}
-      <div className="sticky top-0 z-50 bg-black/80 backdrop-blur-lg border-b border-white/10 py-3">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-sm text-white/70">
-              <AnimatedCounter target={subscriberCount} /> people signed up
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-white/50">Challenge starts in:</span>
-            <Countdown targetDate={challengeStart} />
-          </div>
-        </div>
-      </div>
-
-      {/* Schedule Section */}
-      <section ref={scheduleRef} id="schedule" className="py-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-black mb-4">
-              <span className="text-white">THE </span>
-              <span className="gradient-text-pink">LINEUP</span>
-            </h2>
-            <p className="text-white/60 text-lg">Something for everyone. Find your day.</p>
+      {/* Destinations */}
+      <section className="relative py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">Destinos Populares</h2>
+              <p className="text-white/50 text-lg">Los lugares más deseados de Colombia</p>
+            </div>
           </div>
           
-          <div className="space-y-4">
-            {challenges.map((challenge, index) => (
-              <div 
-                key={index}
-                className={`glass-card rounded-2xl overflow-hidden transition-all duration-300 ${
-                  expandedDay === index ? 'ring-2 ring-white/20' : ''
-                }`}
-              >
-                <button
-                  onClick={() => setExpandedDay(expandedDay === index ? null : index)}
-                  className="w-full p-6 flex items-center gap-4 text-left hover:bg-white/5 transition-colors"
-                >
-                  {/* Emoji icon */}
-                  <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${challenge.color} flex items-center justify-center text-3xl shrink-0`}>
-                    {challenge.emoji}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { name: 'Cartagena', properties: 847, gradient: 'from-orange-500 to-pink-500' },
+              { name: 'Medellín', properties: 1203, gradient: 'from-green-500 to-emerald-500' },
+              { name: 'Bogotá', properties: 956, gradient: 'from-blue-500 to-indigo-500' },
+              { name: 'Santa Marta', properties: 432, gradient: 'from-cyan-500 to-blue-500' },
+            ].map((dest, i) => (
+              <Link key={dest.name} href={`/buscar?ciudad=${dest.name}`} className={`group relative overflow-hidden rounded-3xl ${i === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}>
+                <div className={`absolute inset-0 bg-gradient-to-br ${dest.gradient} opacity-80 group-hover:opacity-100 transition-opacity duration-500`} />
+                <div className={`relative ${i === 0 ? 'p-8 md:p-12 aspect-square md:aspect-auto md:h-full min-h-[300px]' : 'p-6 aspect-square'}`}>
+                  <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8">
+                    <h3 className={`font-bold text-white ${i === 0 ? 'text-3xl md:text-4xl' : 'text-xl md:text-2xl'}`}>{dest.name}</h3>
+                    <p className="text-white/80 text-sm mt-1">{dest.properties.toLocaleString()} propiedades</p>
                   </div>
-                  
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 text-sm text-white/50 mb-1">
-                      <span>{challenge.day}</span>
-                      <span>•</span>
-                      <span>{challenge.date}</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-1">{challenge.name}</h3>
-                    <p className="text-brand-pink text-sm">{challenge.tool}</p>
-                  </div>
-                  
-                  {/* Audience tag */}
-                  <div className="hidden md:block">
-                    <span className="px-3 py-1 rounded-full text-xs bg-white/10 text-white/70">
-                      For: {challenge.audience}
-                    </span>
-                  </div>
-                  
-                  {/* Expand icon */}
-                  <div className="shrink-0">
-                    {expandedDay === index ? (
-                      <ChevronUp className="w-5 h-5 text-white/50" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-white/50" />
-                    )}
-                  </div>
-                </button>
-                
-                {/* Expanded content */}
-                {expandedDay === index && (
-                  <div className="px-6 pb-6 border-t border-white/10 pt-4">
-                    <p className="text-white/70 mb-4">{challenge.description}</p>
-                    
-                    <div className="grid md:grid-cols-2 gap-4 mb-4">
-                      <div>
-                        <h4 className="text-sm font-semibold text-white mb-2">What you get:</h4>
-                        <ul className="space-y-1">
-                          {challenge.features.map((feature, i) => (
-                            <li key={i} className="flex items-center gap-2 text-sm text-white/60">
-                              <Check className="w-4 h-4 text-green-500" />
-                              {feature}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="flex flex-col justify-center items-center md:items-end">
-                        <div className="text-sm text-white/50 mb-1">Value:</div>
-                        <div className="text-3xl font-black gradient-text">{challenge.value}</div>
-                        <div className="text-sm text-white/50">Yours FREE</div>
-                      </div>
-                    </div>
-                    
-                    <button 
-                      onClick={() => scrollToSection(notifyRef)}
-                      className="w-full btn-primary py-3 rounded-xl font-semibold flex items-center justify-center gap-2"
-                    >
-                      Get Notified for This Drop <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-              </div>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* 5 FREE WEBSITES GIVEAWAY */}
-      <section ref={pitchRef} className="py-20 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-brand-purple/10 to-transparent pointer-events-none" />
+      {/* Featured Properties */}
+      <section className="relative py-32 px-6">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-500/5 to-transparent" />
         
-        <div className="max-w-4xl mx-auto relative">
-          <div className="glass-card rounded-3xl p-8 md:p-12 border border-brand-purple/30">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-purple to-brand-pink flex items-center justify-center">
-                <Trophy className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <span className="text-xs text-brand-purple font-semibold uppercase tracking-wider">Limited Opportunity</span>
-                <h2 className="text-2xl md:text-3xl font-black text-white">5 FREE Custom Websites</h2>
-              </div>
-            </div>
-            
-            <p className="text-white/70 text-lg mb-6">
-              I'm giving away <strong className="text-white">5 completely free custom websites</strong> to people with business ideas worth building. Here's how it works:
-            </p>
-            
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="text-center p-4">
-                <div className="w-12 h-12 rounded-full bg-brand-pink/20 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-black text-brand-pink">1</span>
-                </div>
-                <h3 className="font-semibold text-white mb-2">Book a Call</h3>
-                <p className="text-sm text-white/60">Schedule a free discovery call with me</p>
-              </div>
-              <div className="text-center p-4">
-                <div className="w-12 h-12 rounded-full bg-brand-orange/20 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-black text-brand-orange">2</span>
-                </div>
-                <h3 className="font-semibold text-white mb-2">Pitch Your Idea</h3>
-                <p className="text-sm text-white/60">Tell me about your business and vision</p>
-              </div>
-              <div className="text-center p-4">
-                <div className="w-12 h-12 rounded-full bg-brand-yellow/20 flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-black text-brand-yellow">3</span>
-                </div>
-                <h3 className="font-semibold text-white mb-2">Get Built</h3>
-                <p className="text-sm text-white/60">If selected, I build your site + logo FREE</p>
-              </div>
-            </div>
-            
-            <div className="bg-white/5 rounded-xl p-6 mb-8">
-              <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
-                <Gift className="w-5 h-5 text-brand-pink" />
-                What's Included (For Winners):
-              </h4>
-              <ul className="grid md:grid-cols-2 gap-3">
-                {[
-                  'Custom website design & development',
-                  'Logo creation or revision (30 mins)',
-                  'Mobile-responsive design',
-                  'Basic SEO setup',
-                  'Hosting setup assistance',
-                  'Brand color palette'
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-white/70">
-                    <Check className="w-4 h-4 text-green-500 shrink-0" />
-                    <span className="text-sm">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4">
-              <a 
-                href="https://cal.com/machine-mind/discovery"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 btn-primary py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2"
-              >
-                <Calendar className="w-5 h-5" />
-                Book Your Pitch Call
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            </div>
-            
-            <p className="text-center text-white/40 text-sm mt-4">
-              Only 5 spots available. Decisions made by Feb 15.
-            </p>
+        <div className="relative max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="inline-block text-amber-400 text-sm font-medium tracking-wider uppercase mb-4">Selección Premium</span>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Propiedades Destacadas</h2>
+            <p className="text-white/50 text-lg max-w-2xl mx-auto">Alojamientos excepcionales elegidos por su calidad, ubicación y experiencias únicas</p>
           </div>
-        </div>
-      </section>
-
-      {/* Email Capture Section */}
-      <section ref={notifyRef} id="notify" className="py-20 px-4">
-        <div className="max-w-2xl mx-auto">
-          <div className="glass-card rounded-3xl p-8 md:p-12 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-pink to-brand-purple flex items-center justify-center mx-auto mb-6">
-              <Zap className="w-8 h-8 text-white" />
-            </div>
-            
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-              Don't Miss Out
-            </h2>
-            <p className="text-white/60 mb-8">
-              Get notified when each tool drops. First access. No spam.
-            </p>
-            
-            {!isSubmitted ? (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
-                  className="w-full px-6 py-4 rounded-xl text-white placeholder:text-white/40 text-lg"
-                  disabled={isSubmitting}
-                />
-                
-                {error && (
-                  <p className="text-red-400 text-sm">{error}</p>
-                )}
-                
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full btn-primary py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2 disabled:opacity-50"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Joining...
-                    </>
-                  ) : (
-                    <>
-                      Notify Me <ArrowRight className="w-5 h-5" />
-                    </>
-                  )}
-                </button>
-                
-                <p className="text-white/40 text-sm">
-                  Join {subscriberCount.toLocaleString()}+ people already signed up
-                </p>
-              </form>
-            ) : (
-              <div className="space-y-6">
-                <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto">
-                  <Check className="w-8 h-8 text-green-500" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">You're In! 🎉</h3>
-                  <p className="text-white/60">Check your inbox for confirmation.</p>
-                </div>
-                
-                {/* Follow on Instagram */}
-                <div className="pt-6 border-t border-white/10">
-                  <p className="text-white/70 mb-4">Follow me for updates and bonus content:</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {featured.map((property) => (
+              <Link key={property.id} href={`/propiedad/${property.id}`} className="group">
+                <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl overflow-hidden hover:border-amber-500/50 transition-all duration-500 hover:-translate-y-2">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-slate-700 to-slate-800">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent z-10" />
+                    <div className="absolute top-4 left-4 z-20">
+                      <span className="bg-amber-500 text-black text-xs font-semibold px-3 py-1 rounded-full">PREMIUM</span>
+                    </div>
+                    <div className="absolute bottom-4 left-4 z-20 flex items-center gap-1">
+                      <svg className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                      <span className="text-white font-semibold">{property.rating}</span>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center text-white/20">
+                      <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                      </svg>
+                    </div>
+                  </div>
                   
-                  <a
-                    href="https://instagram.com/showowt"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 font-semibold hover:opacity-90 transition-opacity"
-                  >
-                    <Instagram className="w-5 h-5" />
-                    @showowt
-                  </a>
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 text-white/40 text-sm mb-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      </svg>
+                      <span>{property.city}, Colombia</span>
+                    </div>
+                    
+                    <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-amber-400 transition">{property.title}</h3>
+                    
+                    <div className="flex items-center gap-4 text-white/50 text-sm mb-4">
+                      <span>{property.bedrooms} hab</span>
+                      <span>{property.max_guests} huésp</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                      <div>
+                        <span className="text-2xl font-bold text-white">{formatCOP(property.price_per_night)}</span>
+                        <span className="text-white/40 text-sm"> / noche</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            )}
+              </Link>
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link href="/buscar" className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-white px-8 py-4 rounded-full hover:bg-white/10 transition">
+              Ver todas las propiedades
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-6">
-            WHO'S BUILDING ALL THIS?
-          </h2>
-          
-          <p className="text-lg text-white/70 mb-6">
-            I'm the founder of <strong className="text-white">MachineMind</strong> — we build AI automation systems for businesses.
-            Last week I built a complete property accounting platform (that would cost $150K to develop) in under 3 hours.
-          </p>
-          
-          <p className="text-xl text-brand-pink mb-8">
-            This week, I'm giving that power away for free.
-          </p>
-          
-          <a 
-            href="https://instagram.com/showowt"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-6 py-3 rounded-xl glass-card glass-card-hover"
-          >
-            <Instagram className="w-6 h-6" />
-            <span className="font-semibold">@showowt</span>
-          </a>
-        </div>
-      </section>
-
-      {/* CTA for Business */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="relative glass-card rounded-3xl p-8 md:p-12 overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-pink/20 to-brand-purple/20 pointer-events-none" />
+      {/* Why RentaDiario */}
+      <section className="relative py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <span className="inline-block text-amber-400 text-sm font-medium tracking-wider uppercase mb-4">¿Por qué RentaDiario?</span>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">La Nueva Era del Alojamiento en Colombia</h2>
+              <p className="text-white/50 text-lg mb-8">Creamos una plataforma que entiende las necesidades de los viajeros modernos y los anfitriones colombianos.</p>
+              
+              <div className="space-y-6">
+                {[
+                  { icon: '🔒', title: 'Pagos 100% Seguros', desc: 'Wompi y métodos locales. Tu dinero protegido.' },
+                  { icon: '✨', title: 'Propiedades Verificadas', desc: 'Cada alojamiento pasa por nuestro proceso de calidad.' },
+                  { icon: '🇨🇴', title: 'Hecho para Colombia', desc: 'Entendemos el mercado local como nadie más.' },
+                  { icon: '💬', title: 'Soporte en Español', desc: 'Atención personalizada 24/7 en tu idioma.' },
+                ].map((item) => (
+                  <div key={item.title} className="flex gap-4 p-4 rounded-2xl hover:bg-white/5 transition">
+                    <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center text-2xl shrink-0">
+                      {item.icon}
+                    </div>
+                    <div>
+                      <h3 className="text-white font-semibold mb-1">{item.title}</h3>
+                      <p className="text-white/50 text-sm">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
             
             <div className="relative">
-              <div className="flex items-center gap-3 mb-6">
-                <Rocket className="w-8 h-8 text-brand-pink" />
-                <span className="text-sm font-semibold text-brand-pink uppercase tracking-wider">For Businesses</span>
-              </div>
-              
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                Want Something Like This Built For YOUR Business?
-              </h2>
-              
-              <p className="text-lg text-white/70 mb-8">
-                These free tools are just a taste. We build complete AI automation systems that save businesses 
-                <strong className="text-white"> $2,000-8,000/month</strong> in recovered revenue and time savings.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4">
-                <a 
-                  href="https://cal.com/machine-mind/discovery"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-primary px-8 py-4 rounded-xl font-semibold text-lg flex items-center justify-center gap-2"
-                >
-                  <Calendar className="w-5 h-5" />
-                  Book a Discovery Call
-                  <ExternalLink className="w-4 h-4" />
-                </a>
-                <a 
-                  href="https://www.machinemindconsulting.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-8 py-4 rounded-xl font-semibold text-lg glass-card glass-card-hover flex items-center justify-center gap-2"
-                >
-                  Learn More About MachineMind
-                  <ArrowRight className="w-5 h-5" />
-                </a>
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-3xl blur-3xl" />
+              <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8">
+                <div className="grid grid-cols-2 gap-6">
+                  {[
+                    { number: '2,500+', label: 'Propiedades' },
+                    { number: '15,000+', label: 'Huéspedes felices' },
+                    { number: '4.9', label: 'Calificación promedio' },
+                    { number: '32', label: 'Ciudades' },
+                  ].map((stat) => (
+                    <div key={stat.label} className="text-center p-4">
+                      <div className="text-3xl md:text-4xl font-bold text-amber-400 mb-1">{stat.number}</div>
+                      <div className="text-white/50 text-sm">{stat.label}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="relative py-32 px-6">
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-500/10 via-amber-600/5 to-amber-500/10" />
+        <div className="relative max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl md:text-6xl font-bold mb-6">¿Tienes una propiedad?</h2>
+          <p className="text-white/50 text-xl mb-10">Únete a miles de anfitriones que ya están generando ingresos con RentaDiario</p>
+          <Link href="#" className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-amber-600 text-black font-semibold px-8 py-4 rounded-full hover:shadow-lg hover:shadow-amber-500/25 transition-all">
+            Comienza a ganar hoy
+          </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 border-t border-white/10">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-6 h-6 text-brand-pink" />
-              <span className="font-bold text-white">MachineMind</span>
+      <footer className="border-t border-white/10 py-16 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center gap-2 mb-4 md:mb-0">
+              <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg flex items-center justify-center">
+                <span className="text-black font-bold text-sm">R</span>
+              </div>
+              <span className="font-semibold">RentaDiario</span>
             </div>
-            
-            <div className="flex items-center gap-6">
-              <a 
-                href="https://instagram.com/showowt"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white/50 hover:text-white transition-colors flex items-center gap-2"
-              >
-                <Instagram className="w-5 h-5" />
-                <span className="text-sm">@showowt</span>
-              </a>
-            </div>
-            
-            <p className="text-white/40 text-sm">
-              © 2026 MachineMind. Building the future, one tool at a time.
-            </p>
+            <p className="text-white/40 text-sm">© 2025 RentaDiario. Hecho con 🇨🇴 en Colombia</p>
           </div>
         </div>
       </footer>

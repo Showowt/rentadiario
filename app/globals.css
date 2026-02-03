@@ -2,149 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  html {
-    scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-  
-  body {
-    background-color: #0a0a0a;
-    color: white;
-    font-feature-settings: "kern" 1, "liga" 1;
-  }
-  
-  ::selection {
-    background-color: rgba(251, 191, 36, 0.3);
-  }
+:root {
+  --primary: #17A2B8;
+  --primary-dark: #138496;
+  --secondary: #4A90E2;
+  --background: #0a0a0a;
 }
 
-@layer components {
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  .line-clamp-1 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-  }
-  
-  .line-clamp-2 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
+* {
+  box-sizing: border-box;
 }
 
-@layer utilities {
-  .delay-1000 {
-    animation-delay: 1s;
-  }
-  
-  .delay-2000 {
-    animation-delay: 2s;
-  }
-}
-
-/* Smooth transitions */
-a, button {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
-}
-
-/* Custom animations */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes gradient-shift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
-}
-
-/* Focus styles */
-input:focus, select:focus, textarea:focus, button:focus {
-  outline: none;
-}
-
-/* Placeholder styles */
-input::placeholder, textarea::placeholder {
-  color: rgba(255, 255, 255, 0.3);
-}
-
-/* Select dropdown styling */
-select {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff40' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.5rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  padding-right: 2.5rem;
-}
-
-select option {
-  background-color: #1e293b;
+body {
+  background: var(--background);
   color: white;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
-/* Date input styling */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  opacity: 0.5;
-  cursor: pointer;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  opacity: 0.8;
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* Checkbox styling */
-input[type="checkbox"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 1rem;
-  height: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0.25rem;
-  background-color: rgba(255, 255, 255, 0.05);
-  cursor: pointer;
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 }
 
-input[type="checkbox"]:checked {
-  background-color: #f59e0b;
-  border-color: #f59e0b;
-  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='black' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
-  background-size: 100% 100%;
-  background-position: center;
-  background-repeat: no-repeat;
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
+
+/* Turquoise accent utilities */
+.text-brand { color: #17A2B8; }
+.bg-brand { background-color: #17A2B8; }
+.border-brand { border-color: #17A2B8; }
+.from-brand { --tw-gradient-from: #17A2B8; }
+.to-brand { --tw-gradient-to: #138496; }
